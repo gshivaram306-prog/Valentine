@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine</title>
+  <style>
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#f7d7e3;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0;
+    }
+    .card{
+      background:rgba(255,255,255,.7);
+      backdrop-filter: blur(6px);
+      padding:32px 24px;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.12);
+      text-align:center;
+      width:min(520px, 92vw);
+      position:relative;
+      overflow:hidden;
+    }
+    h1{ margin:0 0 18px; font-size:32px; }
+    .btns{ margin-top:18px; height:90px; position:relative; }
+    button{
+      border:none;
+      padding:12px 22px;
+      border-radius:10px;
+      font-size:18px;
+      cursor:pointer;
+      user-select:none;
+    }
+    #yes{ background:#e53935; color:#fff; }
+    #no{
+      background:#fff;
+      color:#333;
+      position:absolute;
+      left:58%;
+      top:0;
+      border:1px solid rgba(0,0,0,.12);
+    }
+    #result{ margin-top:18px; display:none; }
+    #result img{
+      width:min(420px, 100%);
+      border-radius:12px;
+      margin-top:12px;
+    }
+    .small{ opacity:.75; font-size:13px; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="q">Will you be my Valentine? 💖</h1>
+
+    <div class="btns" id="arena">
+      <button id="yes">YES</button>
+      <button id="no">NO</button>
+    </div>
+
+    <div id="result">
+      <h1>YAY!!! 💘</h1>
+      <div>Best decision ever 😘</div>
+
+      <!-- Replace this GIF with your own if you want -->
+      <img alt="celebration gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif" />
+
+      <div style="margin-top:10px;">I love you ❤️</div>
+    </div>
+
+    <div class="small">Tip: Works on mobile too — the “NO” runs away 😄</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const name = params.get("name");
+    if (name) document.getElementById("q").textContent = `${name}, will you be my Valentine? 💖`;
+
+    const noBtn = document.getElementById("no");
+    const arena = document.getElementById("arena");
+    const yesBtn = document.getElementById("yes");
+    const result = document.getElementById("result");
+
+    function moveNoButton() {
+      const a = arena.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+      const maxX = a.width - b.width;
+      const maxY = a.height - b.height;
+      const x = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      const y = Math.max(0, Math.min(maxY, Math.random() * maxY));
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive:false });
+
+    arena.addEventListener("mousemove", (e) => {
+      const b = noBtn.getBoundingClientRect();
+      const dx = e.clientX - (b.left + b.width/2);
+      const dy = e.clientY - (b.top + b.height/2);
+      const dist = Math.hypot(dx, dy);
+      if (dist < 90) moveNoButton();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      arena.style.display = "none";
+      result.style.display = "block";
+    });
+
+    noBtn.addEventListener("click", moveNoButton);
+    moveNoButton();
+  </script>
+</body>
+</html>
